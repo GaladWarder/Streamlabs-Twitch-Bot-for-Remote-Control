@@ -4,7 +4,7 @@ import requests
 import webbrowser
 import time
 import string
-import threading
+from threading import Thread
 
 x, y = pyautogui.size()
 
@@ -58,9 +58,9 @@ def refreshthetoken():
     #timing the refresh to happen every hour
     oldtime = time.time()
     # check
-    while oldtime + 20 != time.time():
+    while oldtime + 3590 != time.time():
 
-        if oldtime + 19 == time.time():
+        if oldtime + 3589 == time.time():
             #refreshing the token before it expires
             #TODO: Enter Streamlabs CLIENT ID, CLIENT SECRET, and REDIRECT URI here
             tokenurl = "https://streamlabs.com/api/v1.0/token"
@@ -108,11 +108,11 @@ def charge_5_Dongers():
     response = requests.request("POST", url, data=kwargs)
     print(response.text)
 
-readbuffer = readbuffer + s.recv(1024)
-temp = string.split(readbuffer, "\n")
-readbuffer = temp.pop()
-
 def chatmonitoring():
+    global readbuffer
+    readbuffer = readbuffer + s.recv(1024)
+    temp = string.split(readbuffer, "\n")
+    readbuffer = temp.pop()
     global username
     for line in temp:
         # Passing Twitch afk checks
@@ -133,7 +133,8 @@ def chatmonitoring():
                 username = usernamesplit[0]
 
                 # Only works after twitch is done announcing stuff (MODT = Message of the day)
-                if True:
+                global MODT
+                if MODT:
                     print username + ": " + message
 
                     #allows a check to see if the bot is in the channel
@@ -329,10 +330,10 @@ def chatmonitoring():
                             time.sleep(0.25)
                             pyautogui.keyUp('[')
 
-#thread the processes together
-checkrefreshtoken = threading.Thread(target=refreshToken())
-watchchat = threading.Thread(target=chatmonitoring())
-
+                for l in parts:
+                    if "End of /NAMES list" in l:
+                        MODT = True
 #starts them both
-checkrefreshtoken.start()
-watchchat.start()
+while True:
+    Thread(target = refreshthetoken()).start()
+    Thread(target = chatmonitoring()).start()
