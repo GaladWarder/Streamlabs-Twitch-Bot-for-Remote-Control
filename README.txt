@@ -15,3 +15,11 @@ I will not be providing support or updates for this; it was more an experiment o
 
 Cheers!
 -Grant 'Galad' Roberts
+
+--Edits: 
+-The bot will take a second to connect to Twitch, you can check if it has connected with the "!testing" command.
+-When the script asks for a code, it is referring to the code at the end of the redirect URL, after you have allowed it access through StreamLabs.
+		
+		It will look something like: http://localhost:8888/callback?code=***THIS IS THE PART IT IS ASKING FOR***
+		
+		The page itself will simply say "This Site Can't Be Reached"
